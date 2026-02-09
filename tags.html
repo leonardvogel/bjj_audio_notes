@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJJ – Tags & Find</title>
+
+<style>
+/* ================= BASE ================= */
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#f1f5f9;
+  color:#111827;
+}
+a{ text-decoration:none; color:inherit; }
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:15px;
+}
+
+/* ================= NAVBAR ================= */
+#navbar{
+  position:sticky;
+  top:0;
+  background:#4f46e5;
+  padding:15px 20px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+  z-index:1000;
+  transition:padding .3s ease,background .3s ease;
+  border-bottom:2px solid #3730a3;
+}
+body.scrolled #navbar{ padding:8px 15px; background:#4338ca; }
+
+.nav-link{
+  color:#fff;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:6px;
+  transition:background .2s,transform .2s;
+  white-space:nowrap;
+}
+.nav-link:hover{ background:rgba(255,255,255,.2); transform:scale(1.05); }
+.nav-link.active{
+  background:#fff;
+  color:#4f46e5;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+.nav-link:nth-last-child(-n+2){
+  margin-left:15px;
+  border-left:1px solid rgba(255,255,255,.3);
+  padding-left:10px;
+}
+@media (max-width:768px){
+  #navbar{ flex-direction:column; align-items:center; padding:10px 0; gap:8px; }
+  .nav-link:nth-last-child(-n+2){ border-left:none; padding-left:6px; margin-left:0; }
+}
+
+/* ================= SECTIONS ================= */
+.section{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+  margin-bottom:15px;
+}
+
+.intro{
+  background:linear-gradient(135deg,#eef2ff 0%,#dbeafe 100%);
+  animation:fadeIn .8s ease forwards;
+}
+@keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+.intro h1{ margin:0 0 8px; font-size:1.8rem; text-align:center; }
+.intro p{ margin:0; color:#1e293b; line-height:1.6; text-align:center; }
+
+/* ================= SEARCH ================= */
+.search-row{
+  display:grid;
+  grid-template-columns: 1fr 260px;
+  gap:10px;
+}
+@media (max-width:768px){
+  .search-row{ grid-template-columns:1fr; }
+}
+
+input[type="text"], select{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #c7d2fe;
+  font-size:1rem;
+  background:#fff;
+}
+
+.small-note{
+  margin-top:8px;
+  font-size:.9rem;
+  color:#475569;
+}
+
+.pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+.pill{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:999px;
+  padding:7px 10px;
+  font-weight:800;
+  color:#4f46e5;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+
+/* ================= RESULTS ================= */
+.results-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.results-head h2{
+  margin:0;
+  font-size:1.1rem;
+  color:#0f172a;
+}
+.count{
+  font-weight:900;
+  color:#4f46e5;
+}
+
+.result{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+
+.r-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.r-title{
+  font-weight:900;
+  color:#0f172a;
+  margin:0 0 4px;
+}
+
+.r-meta{
+  font-size:.85rem;
+  color:#475569;
+  margin:0 0 10px;
+}
+
+audio{ width:100%; margin-top:6px; }
+
+.tagline{
+  font-size:.85rem;
+  color:#475569;
+  margin-top:8px;
+}
+.tagline strong{ color:#334155; }
+
+.badge{
+  display:inline-block;
+  font-size:.75rem;
+  font-weight:900;
+  padding:3px 8px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #e2e8f0;
+  color:#475569;
+  white-space:nowrap;
+}
+
+/* ================= FOOTER ================= */
+footer{
+  text-align:center;
+  padding:22px 15px;
+  color:#6b7280;
+  font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-link">Home</a>
+  <a href="back_control.html" class="nav-link">Back Control</a>
+  <a href="mount.html" class="nav-link">Mount</a>
+  <a href="side_mount.html" class="nav-link">Side Mount</a>
+  <a href="quarter_guard.html" class="nav-link">Quarter Guard</a>
+  <a href="half_guard.html" class="nav-link">Half Guard</a>
+  <a href="closed_guard.html" class="nav-link">Closed Guard</a>
+  <a href="open_guard.html" class="nav-link">Open Guard</a>
+  <a href="judo.html" class="nav-link">Judo</a>
+  <a href="sonstiges.html" class="nav-link">Sonstiges</a>
+  <a href="tags.html" class="nav-link active">Tags & Find</a>
+</nav>
+
+<div class="container">
+
+  <div class="section intro">
+    <h1>🔎 Tags & Find</h1>
+    <p>Suche nach Technik-Namen oder Tags – über alle Bereiche. Review wird nicht angezeigt.</p>
+  </div>
+
+  <div class="section">
+    <div class="search-row">
+      <div>
+        <input id="search" type="text" placeholder='z.B. "escape", "pressure", "kimura", "sweep"'>
+        <div class="small-note">Tipp: Komma = mehrere Begriffe (z.B. <em>escape, mount</em>).</div>
+      </div>
+      <div>
+        <select id="source">
+          <option value="all">Alle Bereiche</option>
+          <option value="back_control">Back Control</option>
+          <option value="mount">Mount</option>
+          <option value="side_mount">Side Mount</option>
+          <option value="quarter_guard">Quarter Guard</option>
+          <option value="half_guard">Half Guard</option>
+          <option value="closed_guard">Closed Guard</option>
+          <option value="open_guard">Open Guard</option>
+          <option value="judo">Judo</option>
+        </select>
+        <div class="small-note">Filtert die Suche (optional).</div>
+      </div>
+    </div>
+
+    <div class="pills">
+      <div class="pill">Treffer: <span id="hitCount">0</span></div>
+      <div class="pill">Status: <span id="statusText">bereit</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="results-head">
+      <h2>Ergebnisse</h2>
+      <div class="count" id="countText">0</div>
+    </div>
+    <div id="results"></div>
+  </div>
+
+</div>
+
+<footer>
+  BJJ Audio Notes · Offline · Lokal gespeichert
+</footer>
+
+<script>
+/* ================= SCROLL ================= */
+let last = false;
+window.addEventListener("scroll",()=>{
+  const now = window.scrollY > 20;
+  if(now !== last){
+    document.body.classList.toggle("scrolled", now);
+    last = now;
+  }
+});
+
+/* ================= SEARCH (ALL DBs) ================= */
+const searchEl = document.getElementById("search");
+const resultsEl = document.getElementById("results");
+const sourceEl = document.getElementById("source");
+const hitCountEl = document.getElementById("hitCount");
+const countTextEl = document.getElementById("countText");
+const statusTextEl = document.getElementById("statusText");
+
+const EXCLUDE_CATEGORIES = new Set(["review","review_done"]); // Review nicht zeigen
+
+const BASE_DB_NAMES = ["AudioDB","bjj-audio","bjj-sonstiges","judo-audio"];
+const EXTRA_DB_NAMES = [
+  // "bjj-audio-back_control",
+  // "bjj-audio-mount",
+  // "bjj-audio-side_mount",
+  // "bjj-audio-quarter_guard",
+  // "bjj-audio-half_guard",
+  // "bjj-audio-closed_guard",
+  // "bjj-audio-open_guard"
+];
+
+async function getDBNames(){
+  let names = Array.from(new Set([...BASE_DB_NAMES, ...EXTRA_DB_NAMES]));
+  if(indexedDB.databases){
+    try{
+      const list = await indexedDB.databases();
+      const found = (list || []).map(x => x && x.name).filter(Boolean);
+      names = Array.from(new Set([...names, ...found]));
+    }catch(_e){}
+  }
+  return names;
+}
+
+function openDB(name){
+  return new Promise((res, rej)=>{
+    const r = indexedDB.open(name);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+
+function readAllVoices(db){
+  return new Promise((res)=>{
+    if(!db.objectStoreNames.contains("voices")) { res([]); return; }
+    try{
+      const req = db.transaction("voices","readonly").objectStore("voices").getAll();
+      req.onsuccess = e => res(e.target.result || []);
+      req.onerror = () => res([]);
+    }catch(_e){ res([]); }
+  });
+}
+
+function prettifyPositionKey(key){
+  return String(key).split("_").map(w => w ? (w[0].toUpperCase() + w.slice(1)) : w).join(" ");
+}
+
+function positionLabelFromDbName(dbName){
+  if(dbName === "judo-audio") return "Judo";
+  if(dbName === "bjj-sonstiges") return "Sonstiges";
+  if(dbName === "AudioDB") return "Home";
+  if(dbName === "bjj-audio") return "BJJ";
+  if(String(dbName).startsWith("bjj-audio-")) return prettifyPositionKey(String(dbName).replace("bjj-audio-",""));
+  return "Bereich";
+}
+
+function matchesSourceFilter(dbName, sourceKey){
+  if(sourceKey === "all") return true;
+  if(sourceKey === "judo") return dbName === "judo-audio";
+  // BJJ-Positionen: zentrale bjj-audio + optional bjj-audio-<position>
+  const specific = `bjj-audio-${sourceKey}`;
+  return dbName === "bjj-audio" || dbName === specific;
+}
+
+function tokenize(q){
+  // "escape, mount" -> ["escape","mount"]
+  return q
+    .split(",")
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function hasAnyMatch(voice, tokens){
+  const name = (voice.name || "").toLowerCase();
+  const tags = Array.isArray(voice.tags) ? voice.tags.join(" ").toLowerCase() : "";
+  return tokens.some(t => name.includes(t) || tags.includes(t));
+}
+
+function formatDate(ms){
+  if(!ms) return "";
+  try{
+    const d = new Date(ms);
+    return d.toLocaleDateString("de-DE");
+  }catch(_e){ return ""; }
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+let searchTimer = null;
+searchEl.addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(runSearch, 120);
+});
+sourceEl.addEventListener("change", runSearch);
+
+async function runSearch(){
+  const raw = (searchEl.value || "").trim();
+  const tokens = tokenize(raw);
+  const sourceKey = sourceEl.value;
+
+  resultsEl.innerHTML = "";
+  hitCountEl.textContent = "0";
+  countTextEl.textContent = "0";
+  if(tokens.length === 0){
+    statusTextEl.textContent = "bereit";
+    return;
+  }
+
+  statusTextEl.textContent = "suche…";
+
+  const dbNames = await getDBNames();
+  const hits = [];
+
+  for(const dbName of dbNames){
+    if(!matchesSourceFilter(dbName, sourceKey)) continue;
+
+    try{
+      const db = await openDB(dbName);
+      const items = await readAllVoices(db);
+      db.close();
+
+      for(const v of items){
+        const cat = String(v.category ?? "");
+        if(EXCLUDE_CATEGORIES.has(cat)) continue;
+        if(!hasAnyMatch(v, tokens)) continue;
+
+        hits.push({ dbName, voice: v });
+      }
+    }catch(_e){}
+  }
+
+  // Neueste zuerst
+  hits.sort((a,b)=> (b.voice.date ?? b.voice.order ?? 0) - (a.voice.date ?? a.voice.order ?? 0));
+
+  hitCountEl.textContent = String(hits.length);
+  countTextEl.textContent = String(hits.length);
+
+  if(hits.length === 0){
+    resultsEl.innerHTML = `<div class="small-note">Keine Treffer.</div>`;
+    statusTextEl.textContent = "fertig";
+    return;
+  }
+
+  hits.slice(0, 120).forEach(h => renderHit(h));
+  statusTextEl.textContent = "fertig";
+}
+
+function renderHit(hit){
+  const v = hit.voice;
+  const div = document.createElement("div");
+  div.className = "result";
+
+  const posLabel = positionLabelFromDbName(hit.dbName);
+  const cat = (v.category !== undefined && v.category !== null) ? String(v.category) : "";
+  const dateText = formatDate(v.date || v.order);
+
+  const tags = Array.isArray(v.tags) && v.tags.length ? v.tags.join(", ") : "";
+
+  div.innerHTML = `
+    <div class="r-top">
+      <div>
+        <div class="r-title">${escapeHtml(v.name || "Ohne Titel")}</div>
+        <div class="r-meta">
+          <span class="badge">${escapeHtml(posLabel)}</span>
+          ${cat ? ` <span class="badge">${escapeHtml(cat)}</span>` : ``}
+          ${dateText ? ` <span class="badge">${escapeHtml(dateText)}</span>` : ``}
+        </div>
+      </div>
+    </div>
+    <audio controls src="${v.audio}"></audio>
+    ${tags ? `<div class="tagline"><strong>Tags:</strong> ${escapeHtml(tags)}</div>` : ``}
+  `;
+
+  resultsEl.appendChild(div);
+}
+</script>
+
+</body>
+</html>

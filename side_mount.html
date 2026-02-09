@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BJJ – Side Mount Audio Notes</title>
+
+<style>
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f1f5f9;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 15px;
+}
+
+/* ================= NAVBAR ================= */
+#navbar {
+  position: sticky;
+  top: 0;
+  background: #4f46e5;
+  padding: 15px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  z-index: 1000;
+  transition: padding 0.3s ease, background 0.3s ease;
+  border-bottom: 2px solid #3730a3;
+}
+
+body.scrolled #navbar {
+  padding: 8px 15px;
+  background: #4338ca;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+}
+
+.nav-link.active {
+  background: white;
+  color: #4f46e5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.nav-link:nth-last-child(-n+2) {
+  margin-left: 15px;
+  border-left: 1px solid rgba(255,255,255,0.3);
+  padding-left: 10px;
+}
+
+@media (max-width: 768px) {
+  #navbar {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    gap: 8px;
+  }
+  .nav-link:nth-last-child(-n+2) {
+    border-left: none;
+    padding-left: 6px;
+    margin-left: 0;
+  }
+}
+
+/* ================= LAYOUT ================= */
+.sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+.section {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+/* ================= BUTTONS ================= */
+button {
+  cursor: pointer;
+  border: none;
+}
+
+.record-btn {
+  width: 100%;
+  max-width: 260px;
+  padding: 8px;
+  font-weight: 600;
+  background: #6366f1;
+  color: white;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.record-btn:hover {
+  background: #4f46e5;
+}
+
+select {
+  margin-bottom: 10px;
+  padding: 6px;
+  width: 100%;
+}
+
+/* ================= VOICE ITEM ================= */
+.voice-item {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.voice-item.dragging {
+  opacity: 0.5;
+}
+
+.voice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.voice-header input {
+  font-size: 0.9rem;
+  font-weight: bold;
+  width: 60%;
+  border: none;
+  background: transparent;
+}
+
+.comment-box {
+  width: 100%;
+  margin-top: 5px;
+  display: none;
+}
+
+.comment-box textarea {
+  width: 100%;
+  min-height: 30px;
+  font-size: 0.85rem;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #c7d2fe;
+  resize: vertical;
+}
+
+.comment-box.open {
+  display: block;
+}
+
+.toggle-comment {
+  background: none;
+  color: #4f46e5;
+  font-size: 0.8rem;
+}
+.delete-btn {
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:4px 8px;
+  border-radius:5px;
+  font-size:0.8rem;
+  cursor:pointer;
+  margin-left:4px;
+}
+.tag-input {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #c7d2fe;
+  margin-top: 5px;
+}
+
+/* ================= EINLEITUNG UND BILD ================= */
+.intro-section {
+  background: linear-gradient(135deg, #eef2ff 0%, #dbeafe 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  text-align: center;
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(10px);} 
+  to {opacity: 1; transform: translateY(0);} 
+}
+
+.intro-section p {
+  font-size: 1rem;
+  color: #1e293b;
+  margin-bottom: 15px;
+}
+
+.intro-section .image-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.intro-section img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+</style>
+</head>
+
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-link">Home</a>
+  <a href="back_control.html" class="nav-link">Back Control</a>
+  <a href="mount.html" class="nav-link">Mount</a>
+  <a href="side_mount.html" class="nav-link active">Side Mount</a>
+  <a href="quarter_guard.html" class="nav-link">Quarter Guard</a>
+  <a href="half_guard.html" class="nav-link">Half Guard</a>
+  <a href="closed_guard.html" class="nav-link">Closed Guard</a>
+  <a href="open_guard.html" class="nav-link">Open Guard</a>
+  <a href="judo.html" class="nav-link">Judo</a>
+  <a href="sonstiges.html" class="nav-link">Sonstiges</a>
+  <a href="tags.html" class="nav-link">Tags & Find</a>
+</nav>
+
+<div class="container">
+  <h1>Side Mount – Audio Notes</h1>
+
+  <div class="section intro-section">
+    <p>
+      Side Mount (Side Control) ist eine zentrale Kontrollposition im BJJ, bei der der Top Player seitlich neben dem Gegner liegt und durch Gewicht, Frames und Underhooks Druck aufbaut, während der Bottom Player nach Re-Guard oder Escapes sucht.
+    </p>
+    <div class="image-wrapper">
+      <img src="img_side_mount.jpg" alt="Side Mount Position">
+    </div>
+  </div>
+
+  <div class="sections">
+    <div class="section">
+      <h2>Top Player</h2>
+      <button id="recordTop" class="record-btn">🎤 Aufnahme</button>
+      <select id="sortTop">
+        <option value="drag">Original</option>
+        <option value="date-asc">Datum ↑</option>
+        <option value="date-desc">Datum ↓</option>
+        <option value="alpha">Alphabetisch</option>
+      </select>
+      <div id="listTop"></div>
+    </div>
+
+    <div class="section">
+      <h2>Bottom Player</h2>
+      <button id="recordBottom" class="record-btn">🎤 Aufnahme</button>
+      <select id="sortBottom">
+        <option value="drag">Original</option>
+        <option value="date-asc">Datum ↑</option>
+        <option value="date-desc">Datum ↓</option>
+        <option value="alpha">Alphabetisch</option>
+      </select>
+      <div id="listBottom"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let last = false;
+window.addEventListener("scroll",()=>{
+  const now = window.scrollY > 20;
+  if(now !== last){
+    document.body.classList.toggle("scrolled", now);
+    last = now;
+  }
+});
+
+// Eigene Datenbank pro Seite (vollständige Trennung)
+const PAGE_DB_NAME = "bjj-audio-" + location.pathname.split("/").pop().replace(".html","");
+
+let db;
+const req = indexedDB.open(PAGE_DB_NAME,1);
+req.onupgradeneeded = e => {
+  db = e.target.result;
+  if(!db.objectStoreNames.contains("voices")){
+    db.createObjectStore("voices",{keyPath:"id",autoIncrement:true});
+  }
+};
+req.onsuccess = e => { db = e.target.result; loadVoices(); };
+
+let recorder, chunks=[], currentCat;
+let audioStream = null;
+let dragItem = null;
+
+let sortMode = { top: "drag", bottom: "drag" };
+
+async function toggle(cat, btn){
+  if(!recorder || recorder.state === "inactive"){
+    currentCat = cat;
+    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recorder = new MediaRecorder(audioStream);
+    chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+      saveVoice();
+      audioStream.getTracks().forEach(track => track.stop());
+      audioStream = null;
+    };
+    recorder.start();
+    btn.textContent = "⏹ Stop";
+  } else {
+    recorder.stop();
+    btn.textContent = "🎤 Aufnahme";
+  }
+}
+
+recordTop.onclick=()=>toggle("top",recordTop);
+recordBottom.onclick=()=>toggle("bottom",recordBottom);
+
+sortTop.onchange = e => { sortMode.top = e.target.value; loadVoices(); };
+sortBottom.onchange = e => { sortMode.bottom = e.target.value; loadVoices(); };
+
+function saveVoice(){
+  const blob = new Blob(chunks,{type:"audio/webm"});
+  const r = new FileReader();
+  r.onload = () => {
+    const tx = db.transaction("voices","readwrite").objectStore("voices");
+    tx.add({
+      audio: r.result,
+      name: "Neue Technik",
+      comment: "",
+      open: false,
+      tags: [],
+      category: currentCat,
+      order: Date.now(),
+      date: Date.now()
+    }).onsuccess = loadVoices;
+  };
+  r.readAsDataURL(blob);
+}
+
+function loadVoices(){
+  document.getElementById("listTop").innerHTML="";
+  document.getElementById("listBottom").innerHTML="";
+  db.transaction("voices").objectStore("voices").getAll().onsuccess = e => {
+    const arr = e.target.result;
+    const top = arr.filter(v => v.category === "top");
+    const bottom = arr.filter(v => v.category === "bottom");
+    applySort(top, sortMode.top);
+    applySort(bottom, sortMode.bottom);
+    top.forEach(v => render(v));
+    bottom.forEach(v => render(v));
+  };
+}
+function applySort(arr, mode){
+  switch(mode){
+    case "date-asc": arr.sort((a,b) => a.date - b.date); break;
+    case "date-desc": arr.sort((a,b) => b.date - a.date); break;
+    case "alpha": arr.sort((a,b) => a.name.localeCompare(b.name, "de")); break;
+    default: arr.sort((a,b) => a.order - b.order);
+  }
+}
+
+function render(v){
+  const wrap = document.createElement("div");
+  wrap.className="voice-item";
+  wrap.draggable=true;
+  wrap.innerHTML=`
+<div class="voice-header">
+  <input type="text" class="voice-name" value="${v.name}">
+  <button class="toggle-comment">💬</button>
+  <button class="delete-btn">🗑 Löschen</button>
+</div>
+<audio controls src="${v.audio}"></audio>
+<div class="comment-box ${v.open?'open':''}">
+  <textarea>${v.comment}</textarea>
+</div>
+<div>
+  <input class="tag-input" placeholder="Tags: escape, submission" value="${v.tags ? v.tags.join(', ') : ''}">
+</div>
+`;
+
+  const nameInput = wrap.querySelector(".voice-name");
+  nameInput.onchange = e => update(v.id,{name:e.target.value});
+  nameInput.addEventListener("keydown", e => { if(e.key==="Enter"){ e.preventDefault(); nameInput.blur(); } });
+
+  const box = wrap.querySelector(".comment-box");
+  wrap.querySelector(".toggle-comment").onclick = ()=>{
+    box.classList.toggle("open");
+    update(v.id,{open:box.classList.contains("open")});
+  };
+  box.querySelector("textarea").oninput=e=>update(v.id,{comment:e.target.value});
+  wrap.querySelector(".tag-input").oninput = e => {
+    const tags = e.target.value.split(",").map(t=>t.trim().toLowerCase()).filter(t=>t);
+    update(v.id,{tags});
+  };
+  wrap.querySelector(".delete-btn").onclick = () => {
+    if(confirm("Willst du diese Sprachnachricht wirklich löschen?")){
+      const tx = db.transaction("voices","readwrite").objectStore("voices");
+      tx.delete(v.id).onsuccess=()=>wrap.remove();
+    }
+  };
+  wrap.addEventListener("dragstart", e => { dragItem = v; wrap.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; });
+  wrap.addEventListener("dragend", e => { dragItem=null; wrap.classList.remove("dragging"); });
+  wrap.addEventListener("dragover", e => e.preventDefault());
+  wrap.addEventListener("drop", e => {
+    e.preventDefault();
+    if(!dragItem || dragItem.id===v.id || dragItem.category!==v.category) return;
+    const temp = dragItem.order;
+    dragItem.order = v.order;
+    v.order = temp;
+    update(dragItem.id,{order:dragItem.order});
+    update(v.id,{order:v.order});
+    loadVoices();
+  });
+
+  document.getElementById(v.category==="top"?"listTop":"listBottom").appendChild(wrap);
+}
+
+function update(id,data){
+  const s=db.transaction("voices","readwrite").objectStore("voices");
+  s.get(id).onsuccess=e=>{ Object.assign(e.target.result,data); s.put(e.target.result); };
+}
+</script>
+
+</body>
+</html>

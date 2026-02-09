@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sonstiges – Audio Notes</title>
+
+<style>
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f1f5f9;
+}
+.container { max-width: 1200px; margin: auto; padding: 15px; }
+
+/* ================= NAVBAR ================= */
+#navbar {
+  position: sticky; top: 0;
+  background: #4f46e5;
+  padding: 15px 20px;
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  z-index: 1000;
+  transition: padding 0.3s ease, background 0.3s ease;
+  border-bottom: 2px solid #3730a3;
+}
+body.scrolled #navbar { padding: 8px 15px; background: #4338ca; }
+
+.nav-link {
+  color: white; text-decoration: none; font-weight: 600;
+  padding: 6px 12px; border-radius: 6px;
+  transition: background 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+.nav-link:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+.nav-link.active {
+  background: white; color: #4f46e5;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.nav-link:nth-last-child(-n+2){
+  margin-left: 15px; border-left: 1px solid rgba(255,255,255,0.3);
+  padding-left: 10px;
+}
+@media (max-width: 768px) {
+  #navbar { flex-direction: column; align-items: center; padding: 10px 0; gap: 8px; }
+  .nav-link:nth-last-child(-n+2){ border-left: none; padding-left: 6px; margin-left: 0; }
+}
+
+/* ================= LAYOUT ================= */
+.sections { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 768px){ .sections { grid-template-columns: 1fr; } }
+.section { background: #ffffff; padding: 15px; border-radius: 10px; }
+
+/* ================= BUTTONS ================= */
+button { cursor: pointer; border: none; }
+
+.record-btn {
+  width: 100%; max-width: 260px;
+  padding: 8px; font-weight: 600;
+  background: #6366f1; color: white;
+  border-radius: 6px; margin-bottom: 10px;
+}
+.record-btn:hover { background: #4f46e5; }
+
+select, input[type="text"] { margin-bottom: 10px; padding: 6px; width: 100%; }
+
+/* ================= VOICE ITEM ================= */
+.voice-item {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+.voice-item.dragging { opacity: 0.5; }
+
+.voice-header { display: flex; justify-content: space-between; align-items: center; }
+
+.voice-header input {
+  font-size: 0.9rem; font-weight: bold;
+  width: 60%;
+  border: none;
+  background: transparent;
+}
+
+.comment-box { width: 100%; margin-top: 5px; display: none; }
+.comment-box textarea {
+  width: 100%; min-height: 30px;
+  font-size: 0.85rem; padding: 6px;
+  border-radius: 6px; border: 1px solid #c7d2fe;
+  resize: vertical;
+}
+.comment-box.open { display: block; }
+
+.toggle-comment { background: none; color: #4f46e5; font-size: 0.8rem; }
+
+.delete-btn {
+  background:#ef4444;
+  color:white;
+  border:none;
+  padding:4px 8px;
+  border-radius:5px;
+  font-size:0.8rem;
+  cursor:pointer;
+  margin-left:4px;
+}
+
+/* unreview Emoji */
+.unreview-btn{
+  background:#f59e0b;
+  color:white;
+  border:none;
+  padding:4px 8px;       /* Größe delete-btn */
+  border-radius:5px;
+  font-size:0.8rem;      /* Größe delete-btn */
+  cursor:pointer;
+  margin-left:4px;
+}
+.unreview-btn:hover{ filter:brightness(0.95); }
+
+.tag-input {
+  width: 100%;
+  padding: 6px;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #c7d2fe;
+  margin-top: 5px;
+}
+
+/* ================= INTRO ================= */
+.intro-section {
+  background: linear-gradient(135deg, #eef2ff 0%, #dbeafe 100%);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+  text-align: center;
+  animation: fadeIn 1s ease forwards;
+}
+@keyframes fadeIn { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+.intro-section p { font-size: 1rem; color: #1e293b; margin-bottom: 0; }
+
+/* ================= IMPORT ================= */
+.import-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 768px) { .import-row { grid-template-columns: 1fr; } }
+
+.import-item {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e2e8f0;
+}
+.import-item .title { font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+.import-item .meta { font-size: 0.8rem; color: #475569; margin-bottom: 8px; }
+
+.import-btn {
+  background: #16a34a;
+  color: white;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.import-btn:hover { filter: brightness(0.95); }
+
+.small-note { font-size: 0.85rem; color: #475569; margin-top: -5px; margin-bottom: 10px; }
+</style>
+</head>
+
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-link">Home</a>
+  <a href="back_control.html" class="nav-link">Back Control</a>
+  <a href="mount.html" class="nav-link">Mount</a>
+  <a href="side_mount.html" class="nav-link">Side Mount</a>
+  <a href="quarter_guard.html" class="nav-link">Quarter Guard</a>
+  <a href="half_guard.html" class="nav-link">Half Guard</a>
+  <a href="closed_guard.html" class="nav-link">Closed Guard</a>
+  <a href="open_guard.html" class="nav-link">Open Guard</a>
+  <a href="judo.html" class="nav-link">Judo</a>
+  <a href="sonstiges.html" class="nav-link active">Sonstiges</a>
+  <a href="tags.html" class="nav-link">Tags & Find</a>
+</nav>
+
+<div class="container">
+  <h1>Sonstiges – Audio Notes</h1>
+
+  <div class="section intro-section">
+    <p>Prinzipien, Ziele, Ideen – und eine Review-Liste zum Wiederholen.</p>
+  </div>
+
+  <div class="sections">
+    <div class="section">
+      <h2>Prinzipien</h2>
+      <button id="recordPrinciples" class="record-btn">🎤 Aufnahme</button>
+      <select id="sortPrinciples">
+        <option value="drag">Original</option>
+        <option value="date-asc">Datum ↑</option>
+        <option value="date-desc">Datum ↓</option>
+        <option value="alpha">Alphabetisch</option>
+      </select>
+      <div id="listPrinciples"></div>
+    </div>
+
+    <div class="section">
+      <h2>Wünsche & Ziele</h2>
+      <button id="recordWishes" class="record-btn">🎤 Aufnahme</button>
+      <select id="sortWishes">
+        <option value="drag">Original</option>
+        <option value="date-asc">Datum ↑</option>
+        <option value="date-desc">Datum ↓</option>
+        <option value="alpha">Alphabetisch</option>
+      </select>
+      <div id="listWishes"></div>
+    </div>
+
+    <div class="section">
+      <h2>Trainingsideen</h2>
+      <button id="recordDrills" class="record-btn">🎤 Aufnahme</button>
+      <select id="sortDrills">
+        <option value="drag">Original</option>
+        <option value="date-asc">Datum ↑</option>
+        <option value="date-desc">Datum ↓</option>
+        <option value="alpha">Alphabetisch</option>
+      </select>
+      <div id="listDrills"></div>
+    </div>
+
+    <div class="section">
+      <h2>Wiederholen (Review)</h2>
+      <button id="recordReview" class="record-btn">🎤 Aufnahme</button>
+      <select id="sortReview">
+        <option value="drag">Original</option>
+        <option value="date-asc">Datum ↑</option>
+        <option value="date-desc">Datum ↓</option>
+        <option value="alpha">Alphabetisch</option>
+      </select>
+      <div class="small-note">Unten suchen → „In Review übernehmen“. In Review: 🔁 entfernt es wieder.</div>
+      <div id="listReview"></div>
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:20px;">
+    <h2>Techniken übernehmen</h2>
+
+    <div class="import-row">
+      <div>
+        <label for="importSource"><strong>Quelle</strong></label>
+        <select id="importSource">
+          <option value="all">Alle Bereiche</option>
+          <option value="back_control">Back Control</option>
+          <option value="mount">Mount</option>
+          <option value="side_mount">Side Mount</option>
+          <option value="quarter_guard">Quarter Guard</option>
+          <option value="half_guard">Half Guard</option>
+          <option value="closed_guard">Closed Guard</option>
+          <option value="open_guard">Open Guard</option>
+          <option value="judo">Judo</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="importQuery"><strong>Suche</strong> (Name oder Tag)</label>
+        <input id="importQuery" type="text" placeholder='z.B. "armbar", "sweep", "griff"'>
+      </div>
+    </div>
+
+    <button id="runImportSearch" class="record-btn" style="max-width: 320px;">🔎 Suchen</button>
+    <div id="importResults"></div>
+  </div>
+</div>
+
+<script>
+// ================= SCROLL =================
+let last = false;
+window.addEventListener("scroll",()=>{
+  const now = window.scrollY > 20;
+  if(now !== last){
+    document.body.classList.toggle("scrolled", now);
+    last = now;
+  }
+});
+
+// ================= DB =================
+let db;
+const req = indexedDB.open("bjj-sonstiges", 1);
+req.onupgradeneeded = e => {
+  db = e.target.result;
+  if(!db.objectStoreNames.contains("voices")){
+    db.createObjectStore("voices",{keyPath:"id",autoIncrement:true});
+  }
+};
+req.onsuccess = e => { db = e.target.result; loadVoices(); };
+
+let recorder, chunks=[], currentCat;
+let audioStream = null;
+let dragItem = null;
+
+let sortMode = { principles:"drag", wishes:"drag", drills:"drag", review:"drag" };
+
+// ================= RECORD =================
+async function toggle(cat, btn){
+  if(!recorder || recorder.state === "inactive"){
+    currentCat = cat;
+    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recorder = new MediaRecorder(audioStream);
+    chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = () => {
+      saveVoice();
+      audioStream.getTracks().forEach(track => track.stop());
+      audioStream = null;
+    };
+    recorder.start();
+    btn.textContent = "⏹ Stop";
+  } else {
+    recorder.stop();
+    btn.textContent = "🎤 Aufnahme";
+  }
+}
+
+recordPrinciples.onclick=()=>toggle("principles",recordPrinciples);
+recordWishes.onclick=()=>toggle("wishes",recordWishes);
+recordDrills.onclick=()=>toggle("drills",recordDrills);
+recordReview.onclick=()=>toggle("review",recordReview);
+
+sortPrinciples.onchange = e => { sortMode.principles = e.target.value; loadVoices(); };
+sortWishes.onchange = e => { sortMode.wishes = e.target.value; loadVoices(); };
+sortDrills.onchange = e => { sortMode.drills = e.target.value; loadVoices(); };
+sortReview.onchange = e => { sortMode.review = e.target.value; loadVoices(); };
+
+// ================= SAVE =================
+function saveVoice(){
+  const blob = new Blob(chunks,{type:"audio/webm"});
+  const r = new FileReader();
+  r.onload = () => {
+    const tx = db.transaction("voices","readwrite").objectStore("voices");
+    tx.add({
+      audio: r.result,
+      name: "Neue Notiz",
+      comment: "",
+      open: false,
+      tags: [],
+      category: currentCat,
+      order: Date.now(),
+      date: Date.now()
+    }).onsuccess = loadVoices;
+  };
+  r.readAsDataURL(blob);
+}
+
+// ================= LOAD =================
+function loadVoices(){
+  listPrinciples.innerHTML="";
+  listWishes.innerHTML="";
+  listDrills.innerHTML="";
+  listReview.innerHTML="";
+
+  db.transaction("voices").objectStore("voices").getAll().onsuccess = e => {
+    const arr = e.target.result || [];
+    const principles = arr.filter(v => v.category === "principles");
+    const wishes = arr.filter(v => v.category === "wishes");
+    const drills = arr.filter(v => v.category === "drills");
+    const review = arr.filter(v => v.category === "review");
+
+    applySort(principles, sortMode.principles);
+    applySort(wishes, sortMode.wishes);
+    applySort(drills, sortMode.drills);
+    applySort(review, sortMode.review);
+
+    principles.forEach(v => render(v));
+    wishes.forEach(v => render(v));
+    drills.forEach(v => render(v));
+    review.forEach(v => render(v));
+  };
+}
+
+function applySort(arr, mode){
+  switch(mode){
+    case "date-asc": arr.sort((a,b) => a.date - b.date); break;
+    case "date-desc": arr.sort((a,b) => b.date - a.date); break;
+    case "alpha": arr.sort((a,b) => (a.name||"").localeCompare((b.name||""), "de")); break;
+    default: arr.sort((a,b) => a.order - b.order);
+  }
+}
+
+// ================= RENDER =================
+function render(v){
+  const wrap = document.createElement("div");
+  wrap.className="voice-item";
+  wrap.draggable=true;
+
+  const showUnreview = v.category === "review";
+
+  wrap.innerHTML=`
+<div class="voice-header">
+  <input type="text" class="voice-name" value="${escapeHtml(v.name||"")}">
+  <button class="toggle-comment">💬</button>
+  ${showUnreview ? `<button class="unreview-btn" title="Aus Review entfernen">🔁</button>` : ``}
+  <button class="delete-btn" title="Löschen">🗑</button>
+</div>
+<audio controls src="${v.audio}"></audio>
+<div class="comment-box ${v.open?'open':''}">
+  <textarea>${escapeHtml(v.comment||"")}</textarea>
+</div>
+<div>
+  <input class="tag-input" placeholder="Tags" value="${escapeHtml(Array.isArray(v.tags)?v.tags.join(", "):"")}">
+</div>
+`;
+
+  const nameInput = wrap.querySelector(".voice-name");
+  nameInput.onchange = e => update(v.id,{name:e.target.value});
+  nameInput.addEventListener("keydown", e => { if(e.key==="Enter"){ e.preventDefault(); nameInput.blur(); } });
+
+  const box = wrap.querySelector(".comment-box");
+  wrap.querySelector(".toggle-comment").onclick = ()=>{
+    box.classList.toggle("open");
+    update(v.id,{open:box.classList.contains("open")});
+  };
+  box.querySelector("textarea").oninput=e=>update(v.id,{comment:e.target.value});
+  wrap.querySelector(".tag-input").oninput = e => {
+    const tags = e.target.value.split(",").map(t=>t.trim().toLowerCase()).filter(t=>t);
+    update(v.id,{tags});
+  };
+
+  const unBtn = wrap.querySelector(".unreview-btn");
+  if(unBtn){
+    unBtn.onclick = () => {
+      update(v.id, { category: "review_done", order: Date.now(), date: Date.now() });
+      loadVoices();
+    };
+  }
+
+  wrap.querySelector(".delete-btn").onclick = () => {
+    if(confirm("Wirklich löschen?")){
+      const tx = db.transaction("voices","readwrite").objectStore("voices");
+      tx.delete(v.id).onsuccess=()=>wrap.remove();
+    }
+  };
+
+  wrap.addEventListener("dragstart", e => { dragItem = v; wrap.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; });
+  wrap.addEventListener("dragend", e => { dragItem=null; wrap.classList.remove("dragging"); });
+  wrap.addEventListener("dragover", e => e.preventDefault());
+  wrap.addEventListener("drop", e => {
+    e.preventDefault();
+    if(!dragItem || dragItem.id===v.id || dragItem.category!==v.category) return;
+    const temp = dragItem.order;
+    dragItem.order = v.order;
+    v.order = temp;
+    update(dragItem.id,{order:dragItem.order});
+    update(v.id,{order:v.order});
+    loadVoices();
+  });
+
+  const map = { principles:"listPrinciples", wishes:"listWishes", drills:"listDrills", review:"listReview" };
+  if(map[v.category]) document.getElementById(map[v.category]).appendChild(wrap);
+}
+
+// ================= UPDATE =================
+function update(id,data){
+  const s=db.transaction("voices","readwrite").objectStore("voices");
+  s.get(id).onsuccess=e=>{ Object.assign(e.target.result,data); s.put(e.target.result); };
+}
+
+// ================= IMPORT =================
+runImportSearch.onclick = () => runSearchAllDBs();
+
+const BASE_DB_NAMES = ["bjj-audio","judo-audio"];
+const EXTRA_BJJ_DB_NAMES = [
+  // "bjj-audio-back_control",
+  // "bjj-audio-mount",
+  // "bjj-audio-side_mount",
+  // "bjj-audio-quarter_guard",
+  // "bjj-audio-half_guard",
+  // "bjj-audio-closed_guard",
+  // "bjj-audio-open_guard"
+];
+
+async function runSearchAllDBs(){
+  const src = importSource.value;
+  const q = (importQuery.value || "").trim().toLowerCase();
+  importResults.innerHTML = `<p class="small-note">Suche läuft…</p>`;
+
+  try{
+    const dbNames = await collectDBNamesForPosition(src);
+    const results = await searchAcrossDBs(dbNames, q);
+
+    importResults.innerHTML = "";
+    if(results.length === 0){
+      importResults.innerHTML = `<p class="small-note">Keine Treffer.</p>`;
+      return;
+    }
+    results.slice(0,60).forEach(r => renderImport(r));
+  }catch(err){
+    importResults.innerHTML = `<p class="small-note">Fehler: ${escapeHtml(err && err.message ? err.message : String(err))}</p>`;
+  }
+}
+
+async function collectDBNamesForPosition(positionKey){
+  let names = Array.from(new Set([...BASE_DB_NAMES, ...EXTRA_BJJ_DB_NAMES]));
+
+  if(indexedDB.databases){
+    try{
+      const list = await indexedDB.databases();
+      const found = (list || []).map(x => x && x.name).filter(Boolean);
+
+      const relevant = found
+        .filter(n => n !== "AudioDB" && n !== "bjj-sonstiges")
+        .filter(n => String(n).startsWith("bjj-audio") || n === "judo-audio");
+
+      names = Array.from(new Set([...names, ...relevant]));
+    }catch(_e){}
+  }
+
+  if(positionKey === "all") return names;
+  if(positionKey === "judo") return names.filter(n => n === "judo-audio");
+
+  const specific = `bjj-audio-${positionKey}`;
+  return names.filter(n => n === "bjj-audio" || n === specific);
+}
+
+async function searchAcrossDBs(dbNames, query){
+  const all = [];
+  for(const name of dbNames){
+    const items = await safeReadVoicesFromDB(name);
+    for(const v of items){
+      const title = (v.name || "").toLowerCase();
+      const tags = Array.isArray(v.tags) ? v.tags.join(" ").toLowerCase() : "";
+      if(!query || title.includes(query) || tags.includes(query)){
+        all.push({ sourceDb: name, voice: v });
+      }
+    }
+  }
+  all.sort((a,b) => (b.voice && b.voice.date ? b.voice.date : 0) - (a.voice && a.voice.date ? a.voice.date : 0));
+  return all;
+}
+
+function safeReadVoicesFromDB(dbName){
+  return new Promise((resolve) => {
+    const openReq = indexedDB.open(dbName);
+    openReq.onerror = () => resolve([]);
+    openReq.onsuccess = e => {
+      const d = e.target.result;
+      if(!d.objectStoreNames.contains("voices")){
+        try{ d.close(); }catch(_e){}
+        resolve([]);
+        return;
+      }
+      try{
+        const tx = d.transaction("voices","readonly").objectStore("voices").getAll();
+        tx.onsuccess = ev => { try{ d.close(); }catch(_e){} resolve(ev.target.result || []); };
+        tx.onerror = () => { try{ d.close(); }catch(_e){} resolve([]); };
+      }catch(_e){
+        try{ d.close(); }catch(__e){}
+        resolve([]);
+      }
+    };
+  });
+}
+
+function positionLabelFromDbName(dbName){
+  if(dbName === "judo-audio") return "Judo";
+  if(dbName === "bjj-audio") return "BJJ";
+  if(String(dbName).startsWith("bjj-audio-")) return prettifyPositionKey(String(dbName).replace("bjj-audio-",""));
+  return "Bereich";
+}
+
+function prettifyPositionKey(key){
+  return String(key).split("_").map(w => w ? (w[0].toUpperCase() + w.slice(1)) : w).join(" ");
+}
+
+function renderImport(res){
+  const v = res.voice;
+  const div = document.createElement("div");
+  div.className = "import-item";
+
+  const tags = Array.isArray(v.tags) && v.tags.length ? v.tags.join(", ") : "—";
+  const cat = (v.category !== undefined && v.category !== null) ? String(v.category) : "unbekannt";
+  const posLabel = positionLabelFromDbName(res.sourceDb);
+
+  div.innerHTML = `
+    <div class="title">${escapeHtml(v.name || "Ohne Titel")}</div>
+    <div class="meta">
+      Bereich: <strong>${escapeHtml(posLabel)}</strong> · Kategorie: <strong>${escapeHtml(cat)}</strong> · Tags: ${escapeHtml(tags)}
+    </div>
+    <button class="import-btn">➕ In Review übernehmen</button>
+  `;
+  div.querySelector(".import-btn").onclick = () => cloneToReview(res.sourceDb, v);
+  importResults.appendChild(div);
+}
+
+function cloneToReview(sourceDbName, v){
+  const tx = db.transaction("voices","readwrite").objectStore("voices");
+  tx.add({
+    audio: v.audio,
+    name: v.name ? `${v.name} (Review)` : "Neue Technik (Review)",
+    comment: v.comment || "",
+    open: false,
+    tags: Array.isArray(v.tags) ? v.tags.slice() : [],
+    category: "review",
+    order: Date.now(),
+    date: Date.now(),
+    sourceDb: sourceDbName,
+    sourceCategory: v.category
+  }).onsuccess = () => {
+    loadVoices();
+    alert("In Review ✅");
+  };
+}
+
+// ================= HELPER =================
+function escapeHtml(str){
+  return String(str)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+</script>
+
+</body>
+</html>
