@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJJ Audio Notes – Home</title>
+
+<style>
+/* ================= BASE ================= */
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#f1f5f9;
+  color:#111827;
+}
+a{ text-decoration:none; color:inherit; }
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:15px;
+}
+
+/* ================= NAVBAR ================= */
+#navbar{
+  position:sticky;
+  top:0;
+  background:#4f46e5;
+  padding:15px 20px;
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+  z-index:1000;
+  transition:padding .3s ease,background .3s ease;
+  border-bottom:2px solid #3730a3;
+}
+body.scrolled #navbar{ padding:8px 15px; background:#4338ca; }
+
+.nav-link{
+  color:#fff;
+  font-weight:600;
+  padding:6px 12px;
+  border-radius:6px;
+  transition:background .2s,transform .2s;
+  white-space:nowrap;
+}
+.nav-link:hover{ background:rgba(255,255,255,.2); transform:scale(1.05); }
+.nav-link.active{
+  background:#fff;
+  color:#4f46e5;
+  box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+.nav-link:nth-last-child(-n+2){
+  margin-left:15px;
+  border-left:1px solid rgba(255,255,255,.3);
+  padding-left:10px;
+}
+@media (max-width:768px){
+  #navbar{ flex-direction:column; align-items:center; padding:10px 0; gap:8px; }
+  .nav-link:nth-last-child(-n+2){ border-left:none; padding-left:6px; margin-left:0; }
+}
+
+/* ================= SECTIONS ================= */
+.section{
+  background:#fff;
+  padding:15px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,.08);
+  margin-bottom:15px;
+}
+
+.intro{
+  background:linear-gradient(135deg,#eef2ff 0%,#dbeafe 100%);
+  animation:fadeIn .8s ease forwards;
+  text-align:center;
+}
+@keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+.intro h1{ margin:0 0 8px; font-size:2rem; }
+.intro p{ margin:0 auto; max-width:900px; color:#1e293b; line-height:1.6; }
+
+.profile-img{
+  width:180px;
+  height:180px;
+  border-radius:16px;
+  object-fit:cover;
+  margin:12px auto 6px;
+  display:block;
+  border:3px solid #fff;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);
+}
+.grad-text{ font-size:.9rem; margin:0; color:#334155; }
+
+/* ================= STATS BAR ================= */
+.statsbar{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin-top:12px;
+}
+.pill{
+  background:#fff;
+  border:1px solid #e2e8f0;
+  border-radius:999px;
+  padding:8px 12px;
+  font-weight:700;
+  color:#4f46e5;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.pill small{
+  font-weight:600;
+  color:#475569;
+  margin-left:8px;
+}
+
+.badge{
+  display:inline-block;
+  font-size:.75rem;
+  font-weight:800;
+  padding:3px 8px;
+  border-radius:999px;
+  background:#f1f5f9;
+  color:#475569;
+  border:1px solid #e2e8f0;
+  vertical-align:middle;
+  margin-left:6px;
+}
+
+/* ================= QUICK LINKS ================= */
+.quick-actions{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.quick-card{
+  background:#fff;
+  border-radius:12px;
+  padding:14px;
+  font-weight:800;
+  color:#4f46e5;
+  border:1px solid #e2e8f0;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.quick-card span{ display:block; font-size:1.9rem; margin-bottom:6px; }
+.quick-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
+}
+
+/* ================= HOW IT WORKS ================= */
+.how{
+  line-height:1.65;
+  color:#1e293b;
+}
+.how h2{
+  margin:0 0 8px;
+  color:#4f46e5;
+  text-align:center;
+}
+.how ul{
+  margin:10px 0 0;
+  padding-left:18px;
+}
+.how li{ margin:6px 0; }
+
+/* ================= REVIEW NEXT ================= */
+.review-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+}
+.review-left{ min-width:220px; }
+.review-title{
+  font-weight:900;
+  color:#0f172a;
+  margin-bottom:4px;
+}
+.review-sub{
+  font-size:.9rem;
+  color:#475569;
+}
+.review-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.btn{
+  cursor:pointer;
+  border:none;
+  border-radius:10px;
+  padding:8px 10px;
+  font-weight:800;
+}
+.btn-ok{
+  background:#16a34a;
+  color:#fff;
+}
+.btn-ok:hover{ filter:brightness(.95); }
+.link-soft{
+  font-weight:800;
+  color:#4f46e5;
+  padding:8px 10px;
+  border-radius:10px;
+  border:1px solid #e2e8f0;
+  background:#fff;
+}
+.link-soft:hover{ background:#f8fafc; }
+
+/* ================= FOOTER ================= */
+footer{
+  text-align:center;
+  padding:22px 15px;
+  color:#6b7280;
+  font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-link active">Home</a>
+  <a href="back_control.html" class="nav-link">Back Control</a>
+  <a href="mount.html" class="nav-link">Mount</a>
+  <a href="side_mount.html" class="nav-link">Side Mount</a>
+  <a href="quarter_guard.html" class="nav-link">Quarter Guard</a>
+  <a href="half_guard.html" class="nav-link">Half Guard</a>
+  <a href="closed_guard.html" class="nav-link">Closed Guard</a>
+  <a href="open_guard.html" class="nav-link">Open Guard</a>
+  <a href="judo.html" class="nav-link">Judo</a>
+  <a href="sonstiges.html" class="nav-link">Sonstiges</a>
+  <a href="tags.html" class="nav-link">Tags & Find</a>
+</nav>
+
+<div class="container">
+
+  <div class="section intro">
+  <h1>BJJ Audio Notes</h1>
+
+  <p>
+    Diese Webseite dient als persönliches Technik-Archiv für Brazilian Jiu-Jitsu und Judo.
+    Der Fokus liegt bewusst auf Funktionalität, Struktur und Wiederholung – nicht auf Design
+    oder Selbstdarstellung.
+  </p>
+
+  <p>
+    Brazilian Jiu-Jitsu ist ein positionsbasierter Sport. Ähnlich wie im Schach entscheidet
+    nicht ein einzelner Zug, sondern die Stellung auf dem Brett darüber, welche Optionen
+    sinnvoll oder überhaupt möglich sind. Eine gute Position eröffnet Angriffe, eine schlechte
+    schränkt sie ein.
+  </p>
+
+  <p>
+    Genau deshalb sind die Techniken hier nach Positionen getrennt abgelegt. Jede Seite
+    entspricht einer realen Kampfsituation, so wie sie im Training oder Sparring entsteht.
+    Das erleichtert das Lernen, Wiederfinden und gezielte Wiederholen einzelner Abläufe.
+  </p>
+
+  <p>
+    Techniken werden als Audio gespeichert, können benannt, kommentiert und getaggt werden.
+    Über die Review-Funktion lassen sich Inhalte sammeln, die aktuell besondere Aufmerksamkeit
+    brauchen – und später wieder aus dem Fokus nehmen, ohne sie zu verlieren.
+  </p>
+
+  <img src="img_leonard_blue_2024.jpg" alt="Profilbild" class="profile-img">
+  <p class="grad-text"><em>Graduierung zum Blau-Gurt (2024)</em></p>
+
+    <div class="statsbar">
+      <div class="pill">
+        Techniken: <span id="totalCount">0</span>
+        <small>(ohne Review)</small>
+      </div>
+      <div class="pill">
+        Review offen: <span id="reviewCount">0</span>
+        <span class="badge">neu</span>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <a href="mount.html" class="quick-card"><span>⬆️</span>Mount</a>
+      <a href="half_guard.html" class="quick-card"><span>🔄</span>Half Guard</a>
+      <a href="judo.html" class="quick-card"><span>🥋</span>Judo</a>
+      <a href="tags.html" class="quick-card"><span>🔎</span>Tags & Find</a>
+    </div>
+  </div>
+
+  <div class="section" id="nextReviewBox">
+    <div class="review-row">
+      <div class="review-left">
+        <div class="review-title">Nächste Review-Technik</div>
+        <div class="review-sub" id="nextReviewText">Lädt…</div>
+      </div>
+      <div class="review-actions">
+        <a class="link-soft" id="goReviewLink" href="sonstiges.html">➡️ Öffnen</a>
+        <button class="btn btn-ok" id="markDoneBtn" disabled>✅ Erledigt</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section how">
+    <h2>So funktioniert’s</h2>
+    <ul>
+      <li>In jeder Position kannst du per <strong>🎤</strong> eine Technik als Audio aufnehmen.</li>
+      <li>Name, Notizen (<strong>💬</strong>) und Tags kannst du jederzeit ändern – alles speichert sofort.</li>
+      <li>Sortieren geht per Datum/Alphabet oder Drag & Drop.</li>
+      <li><strong>Review</strong>: In Sonstiges Techniken zum Wiederholen sammeln (und später wieder rausnehmen).</li>
+      <li>Alles bleibt <strong>lokal im Browser</strong> (Offline, keine Anmeldung).</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  BJJ Audio Notes · Offline · Lokal gespeichert
+</footer>
+
+<script>
+/* ================= SCROLL ================= */
+let last = false;
+window.addEventListener("scroll",()=>{
+  const now = window.scrollY > 20;
+  if(now !== last){
+    document.body.classList.toggle("scrolled", now);
+    last = now;
+  }
+});
+
+/* ================= COUNTS ================= */
+/* Review-Aufnahmen (auch wenn rausgenommen -> review_done) werden NICHT mitgezählt */
+const EXCLUDE_CATEGORIES_TOTAL = new Set(["review","review_done"]); 
+
+const BASE_DB_NAMES = ["AudioDB","bjj-audio","bjj-sonstiges","judo-audio"];
+const EXTRA_DB_NAMES = [
+  // "bjj-audio-back_control",
+  // "bjj-audio-mount",
+  // "bjj-audio-side_mount",
+  // "bjj-audio-quarter_guard",
+  // "bjj-audio-half_guard",
+  // "bjj-audio-closed_guard",
+  // "bjj-audio-open_guard"
+];
+
+async function getDBNames(){
+  let names = Array.from(new Set([...BASE_DB_NAMES, ...EXTRA_DB_NAMES]));
+  if(indexedDB.databases){
+    try{
+      const list = await indexedDB.databases();
+      const found = (list || []).map(x => x && x.name).filter(Boolean);
+      names = Array.from(new Set([...names, ...found]));
+    }catch(_e){}
+  }
+  return names;
+}
+
+function openDB(name){
+  return new Promise((res, rej)=>{
+    const r = indexedDB.open(name);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+
+function readAllVoices(db){
+  return new Promise((res)=>{
+    if(!db.objectStoreNames.contains("voices")) { res([]); return; }
+    try{
+      const req = db.transaction("voices","readonly").objectStore("voices").getAll();
+      req.onsuccess = e => res(e.target.result || []);
+      req.onerror = () => res([]);
+    }catch(_e){ res([]); }
+  });
+}
+
+async function updateTotalCount(){
+  const dbNames = await getDBNames();
+  let total = 0;
+
+  for(const name of dbNames){
+    try{
+      const db = await openDB(name);
+      const items = await readAllVoices(db);
+      db.close();
+
+      for(const v of items){
+        const cat = String(v.category ?? "");
+        if(!EXCLUDE_CATEGORIES_TOTAL.has(cat)) total++;
+      }
+    }catch(_e){}
+  }
+
+  document.getElementById("totalCount").textContent = total;
+}
+
+/* ================= REVIEW (bjj-sonstiges) ================= */
+let nextReview = null;
+
+async function loadReviewInfo(){
+  const nextText = document.getElementById("nextReviewText");
+  const btn = document.getElementById("markDoneBtn");
+
+  try{
+    const db = await openDB("bjj-sonstiges");
+    const items = await readAllVoices(db);
+    db.close();
+
+    const reviewItems = items.filter(v => String(v.category ?? "") === "review");
+    document.getElementById("reviewCount").textContent = reviewItems.length;
+
+    if(reviewItems.length === 0){
+      nextReview = null;
+      nextText.textContent = "Keine offenen Review-Techniken 🎉";
+      btn.disabled = true;
+      return;
+    }
+
+    reviewItems.sort((a,b)=> (a.date ?? a.order ?? 0) - (b.date ?? b.order ?? 0));
+    nextReview = reviewItems[0];
+
+    nextText.textContent = nextReview.name || "Ohne Titel";
+    btn.disabled = false;
+  }catch(_e){
+    document.getElementById("reviewCount").textContent = "0";
+    nextReview = null;
+    nextText.textContent = "Review konnte nicht geladen werden.";
+    btn.disabled = true;
+  }
+}
+
+async function markNextReviewDone(){
+  if(!nextReview) return;
+
+  const btn = document.getElementById("markDoneBtn");
+  btn.disabled = true;
+
+  try{
+    const db = await openDB("bjj-sonstiges");
+    if(!db.objectStoreNames.contains("voices")) { db.close(); return; }
+
+    const tx = db.transaction("voices","readwrite");
+    const store = tx.objectStore("voices");
+
+    const getReq = store.get(nextReview.id);
+    getReq.onsuccess = e => {
+      const obj = e.target.result;
+      if(!obj) return;
+      obj.category = "review_done";
+      obj.order = Date.now();
+      obj.date = Date.now();
+      store.put(obj);
+    };
+
+    await new Promise(r => tx.oncomplete = r);
+    db.close();
+
+    await loadReviewInfo();
+    await updateTotalCount(); // damit Zählung sofort passt
+  }catch(_e){
+    btn.disabled = false;
+  }
+}
+
+document.getElementById("markDoneBtn").onclick = markNextReviewDone;
+
+/* update */
+updateTotalCount();
+loadReviewInfo();
+</script>
+
+</body>
+</html>
